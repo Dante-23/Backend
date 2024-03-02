@@ -4,8 +4,10 @@ import com.learnthistime.learnthistime.models.User;
 import com.learnthistime.learnthistime.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserRepoService {
@@ -41,4 +43,8 @@ public class UserRepoService {
         return mUserRepo.findAll();
     }
 
+    public User getUserFromUserName(final String userName) {
+        Optional<User> user = mUserRepo.findById(userName);
+        return user.orElse(null);
+    }
 }

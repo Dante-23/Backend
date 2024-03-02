@@ -10,14 +10,20 @@ public class Todo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Nonnull
-	@Column(length = 50, unique = true)
+	@Column(length = 50)
 	private String name;
 
 	@Nonnull
 	@Column(length = 30)
 	private String dueDate;
+
+	@ManyToOne
+	@Nonnull
+	@JoinColumn(name = "userName")
+	private User mUser;
 	
-	public Todo(String name, String dueDate) {
+	public Todo(User user, String name, String dueDate) {
+		mUser = user;
 		this.name = name;
 		this.dueDate = dueDate;
 	}
@@ -41,5 +47,12 @@ public class Todo {
 	}
 	public void setDueDate(String dueDate) {
 		this.dueDate = dueDate;
+	}
+	@Nonnull
+	public User getUser() {
+		return mUser;
+	}
+	public void setUser(@Nonnull User mUser) {
+		this.mUser = mUser;
 	}
 }

@@ -3,6 +3,9 @@ package com.learnthistime.learnthistime.models;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "user_info", uniqueConstraints = {@UniqueConstraint(columnNames = {"userName"})})
 public class User {
@@ -13,6 +16,9 @@ public class User {
 	@Nonnull
 	@Column(length = 10, unique = true)
 	private String userName;
+
+	@OneToMany(mappedBy = "mUser")
+	private List<Todo> mTodos = new ArrayList<>();
 
 	public User() {}
 	public User(String name, String userName) {

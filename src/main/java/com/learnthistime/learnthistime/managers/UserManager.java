@@ -22,6 +22,10 @@ public class UserManager {
 		}
 		return sInstance;
 	}
+
+	public static synchronized UserManager getAlreadyCreatedInstance() {
+		return sInstance;
+	}
 	
 	public boolean exists(User user) {
 		return false;
@@ -44,7 +48,7 @@ public class UserManager {
 	}
 	
 	public User getUser(String userName) {
-		return null;
+		return mUserRepoService.getUserFromUserName(userName);
 	}
 	
 	public boolean addUser(User user) {

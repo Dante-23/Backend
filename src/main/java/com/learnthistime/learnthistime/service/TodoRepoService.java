@@ -20,6 +20,12 @@ public class TodoRepoService {
             if (mTodoRepo.findById(todo.getId()).isPresent()) {
                 return false;
             }
+            List<Todo> todos = mTodoRepo.findBymUser(todo.getUser());
+            if (todos != null && !todos.isEmpty()) {
+                for (Todo cTodo: todos) {
+                    if (cTodo.getName().compareTo(todo.getName()) == 0) return false;
+                }
+            }
             mTodoRepo.save(todo);
             return true;
         } catch (Exception e) {
@@ -30,5 +36,9 @@ public class TodoRepoService {
 
     public List<Todo> getAllTodos() {
         return mTodoRepo.findAll();
+    }
+
+    public List<Todo> getAllTodos(final User user) {
+        return mTodoRepo.findBymUser(user);
     }
 }

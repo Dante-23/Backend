@@ -20,11 +20,9 @@ public class TodoManager {
 		return sInstance;
 	}
 	
-//	public Todo[] getAllTodo(User user) {
-//		if (user == null || !userTodoMap.containsKey(user)) return null;
-//		Object objarr[] = userTodoMap.get(user).toArray();
-//		return Arrays.copyOf(objarr, objarr.length, Todo[].class);
-//	}
+	public Todo[] getAllTodo(final User user) {
+		return mTodoRepoService.getAllTodos(user).toArray(new Todo[0]);
+	}
 
 	public Todo[] getAllTodo() {
 		return mTodoRepoService.getAllTodos().toArray(new Todo[0]);
