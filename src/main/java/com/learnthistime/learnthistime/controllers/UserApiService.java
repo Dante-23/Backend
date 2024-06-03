@@ -28,6 +28,15 @@ public class UserApiService {
 		return "Unable to add user";
 	}
 
+	@PostMapping("/friend")
+	public String addFriend(@RequestBody AddFriendRequestBody requestBody) {
+		System.out.println("requestBody: " + requestBody);
+		String user1 = requestBody.user1, user2 = requestBody.user2;
+		System.out.println("Got friend request for: " + user1 + " " + user2);
+		if (manager.addFriend(user1, user2)) return "Friend added";
+		else return "Unable to add friend";
+	}
+
 //	@PostMapping()
 //	public String addUsers(@RequestBody User users[]) {
 //		if (manager.addUsers(users)) return "Added all users";
@@ -49,5 +58,14 @@ public class UserApiService {
 	@GetMapping()
 	public User[] getAllUsers() {
 		return manager.getAllUsers();
+	}
+
+	private static class AddFriendRequestBody {
+		String user1;
+		String user2;
+		public AddFriendRequestBody(String user1, String user2) {
+			this.user1 = user1;
+			this.user2 = user2;
+		}
 	}
 }

@@ -44,7 +44,19 @@ public class UserRepoService {
     }
 
     public User getUserFromUserName(final String userName) {
-        Optional<User> user = mUserRepo.findById(userName);
-        return user.orElse(null);
+        System.out.println("Searching for userName: " + userName);
+//        Optional<User> user = mUserRepo.findById(userName);
+        List<User> users = getAllUsers();
+        for (User user: users) {
+            System.out.println("user: " + user.getUserName());
+            if (user.getUserName().equals(userName)) return user;
+        }
+//        return user.orElse(null);
+        return null;
+    }
+
+    public boolean updateUser(final User user) {
+        mUserRepo.save(user);
+        return true;
     }
 }

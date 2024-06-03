@@ -58,4 +58,14 @@ public class UserManager {
 	public boolean addUsers(User users[]) {
 		return mUserRepoService.insertMultipleUsers(users);
 	}
+
+	public boolean addFriend(final String userName1, final String userName2) {
+		User user1 = mUserRepoService.getUserFromUserName(userName1);
+		User user2 = mUserRepoService.getUserFromUserName(userName2);
+		user1.addFriend(user2);
+		user2.addFriend(user1);
+		if (mUserRepoService.updateUser(user1) && mUserRepoService.updateUser(user2))
+			return true;
+		else return false;
+	}
 }
