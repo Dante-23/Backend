@@ -60,6 +60,11 @@ public class UserApiService {
 		return manager.getAllUsers();
 	}
 
+	@GetMapping("/test")
+	public String testGetMapping() {
+		return "This is a test mapping";
+	}
+
 	private static class AddFriendRequestBody {
 		String user1;
 		String user2;
