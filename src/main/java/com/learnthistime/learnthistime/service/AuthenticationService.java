@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import com.learnthistime.learnthistime.models.User;
 import com.learnthistime.learnthistime.models.Token;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +20,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepo userRepository;
+//    private final UserRepo userRepository;
 //    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+    private final UserRepoService userRepoService;
 //
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -31,10 +34,16 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .build();
-        var savedUser = userRepository.save(user);
+        var savedUser = userRepoService.insert(user);
+        if (!savedUser) {
+            return AuthenticationResponse.builder()
+                    .accessToken("User already exists")
+                    .build();
+        }
         var jwtToken = jwtService.generateToken(user);
 //        var refreshToken = jwtService.generateRefreshToken(user);
 //        saveUserToken(savedUser, jwtToken);
+        tokenService.addUserToken(user.getUsername(), jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
 //                .refreshToken(refreshToken)
@@ -54,22 +63,44 @@ public class AuthenticationService {
 
 //
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        User user = userRepoService.getUserFromUserName(request.getUsername());
+        if (user == null) {
+            throw new NullPointerException();
+        }
+        if (tokenService.isUserTokenValid(user.getUsername())) {
+            System.out.println("Found already active user token");
+            String token = tokenService.getUserToken(user.getUsername());
+            return AuthenticationResponse.builder()
+                    .accessToken(token)
+                    .build();
+        } else {
+            System.out.println("User token is not invalid");
+            tokenService.removeUserToken(user.getUsername());
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByUserName(request.getUsername())
-                .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
 //        var refreshToken = jwtService.generateRefreshToken(user);
 //        revokeAllUserTokens(user);
 //        saveUserToken(user, jwtToken);
+        tokenService.addUserToken(user.getUsername(), jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
 //                .refreshToken(refreshToken)
                 .build();
+//        return null;
+    }
+
+    public String logout(String username) {
+        User user = userRepoService.getUserFromUserName(username);
+        if (user == null) throw new NullPointerException();
+        tokenService.removeUserToken(username);
+        SecurityContextHolder.clearContext();
+        return username + " logged out";
     }
 //
 //    private void saveUserToken(User user, String jwtToken) {

@@ -49,7 +49,9 @@ public class UserRepoService {
         List<User> users = getAllUsers();
         for (User user: users) {
             System.out.println("user: " + user.getUserName());
-            if (user.getUserName().equals(userName)) return user;
+            if (user.getUserName().equals(userName)) {
+                return user;
+            }
         }
 //        return user.orElse(null);
         return null;

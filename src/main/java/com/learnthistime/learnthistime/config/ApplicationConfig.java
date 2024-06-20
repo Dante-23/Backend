@@ -16,6 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.concurrent.ConcurrentHashMap;
+import com.learnthistime.learnthistime.models.User;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
@@ -45,5 +48,8 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public ConcurrentHashMap<String, String> userTokenMap() { return new ConcurrentHashMap<>(); }
 
 }

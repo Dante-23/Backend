@@ -3,6 +3,7 @@ package com.learnthistime.learnthistime.controllers;
 import com.learnthistime.learnthistime.service.AuthenticationService;
 import com.learnthistime.learnthistime.utils.AuthenticationRequest;
 import com.learnthistime.learnthistime.utils.AuthenticationResponse;
+import com.learnthistime.learnthistime.utils.LogoutRequest;
 import com.learnthistime.learnthistime.utils.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +31,12 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+        System.out.println("Got username for logout: " + request.getUsername());
+        return ResponseEntity.ok(service.logout(request.getUsername()));
     }
 
     @PostMapping("/refresh-token")
